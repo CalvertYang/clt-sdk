@@ -6,6 +6,8 @@ require "clt/credit_card"
 require "nokogiri"
 require "nori"
 require "json"
+require "net/http"
+require "net/https"
 
 module Clt
   class << self
