@@ -1,55 +1,64 @@
 module Clt
   class Cvs
+    include GeneralMethods
+
     def initialize
       raise ArgumentError, "Please setup cvs_cust_id first" if Clt.cvs_cust_id.nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :cvs_cust_id, data: "String") unless Clt.cvs_cust_id.is_a? String
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :cvs_cust_id, data: "String") unless Clt.cvs_cust_id.is_a? String
       ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :cvs_cust_id) if Clt.cvs_cust_id.empty?
 
       raise ArgumentError, "Please setup cvs_cust_password first" if Clt.cvs_cust_password.nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :cvs_cust_password, data: "String") unless Clt.cvs_cust_password.is_a? String
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :cvs_cust_password, data: "String") unless Clt.cvs_cust_password.is_a? String
       ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :cvs_cust_password) if Clt.cvs_cust_password.empty?
 
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :cvs_cust_password, data: "Integer") unless Clt.cvs_expire_after.is_a? Fixnum
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :cvs_default_expire_day, data: "Integer") unless Clt.cvs_default_expire_day.is_a? Integer
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :cvs_default_expire_day, data: "greater than 0") if Clt.cvs_default_expire_day <= 0
     end
 
     def order_create params = {}
-      ErrorMessage.raise_argument_error(msg: :wrong_parameter_type, type: "Hash") unless params.is_a? Hash
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: "Parameter", data: "Hash") unless params.is_a? Hash
 
       ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :service_url) if params[:service_url].nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :service_url, data: "String") unless params[:service_url].is_a? String
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :service_url, data: "String") unless params[:service_url].is_a? String
       ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :service_url) if params[:service_url].empty?
 
-      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :order_number) if params[:order_number].nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :order_number, data: "String") unless params[:order_number].is_a? String
-      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :order_number) if params[:order_number].empty?
+      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :cust_order_number) if params[:cust_order_number].nil?
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :cust_order_number, data: "String") unless params[:cust_order_number].is_a? String
+      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :cust_order_number) if params[:cust_order_number].empty?
 
-      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :amount) if params[:amount].nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :amount, data: "Integer") unless params[:amount].is_a? Fixnum
+      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :order_amount) if params[:order_amount].nil?
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :order_amount, data: "Integer") unless params[:order_amount].is_a? Integer
 
-      if params.has_key? :name
-        ErrorMessage.raise_argument_error(msg: :wrong_data, field: :name, data: "String") unless params[:name].is_a? String
-        ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :name) if params[:name].empty?
+      if params.has_key? :expire_date
+        ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :expire_date, data: "String") unless params[:expire_date].is_a? String
+        ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :expire_date) if params[:expire_date].empty?
+        ErrorMessage.raise_argument_error(msg: :wrong_data_format, field: :expire_date) unless /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}\z/.match(params[:expire_date])
       end
 
-      if params.has_key? :postcode
-        ErrorMessage.raise_argument_error(msg: :wrong_data, field: :postcode, data: "String") unless params[:postcode].is_a? String
-        ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :postcode) if params[:postcode].empty?
+      if params.has_key? :payer_name
+        ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :payer_name, data: "String") unless params[:payer_name].is_a? String
+        ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :payer_name) if params[:payer_name].empty?
       end
 
-      if params.has_key? :address
-        ErrorMessage.raise_argument_error(msg: :wrong_data, field: :address, data: "String") unless params[:address].is_a? String
-        ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :address) if params[:address].empty?
+      if params.has_key? :payer_postcode
+        ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :payer_postcode, data: "String") unless params[:payer_postcode].is_a? String
+        ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :payer_postcode) if params[:payer_postcode].empty?
       end
 
-      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :mobile) if params[:mobile].nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :mobile, data: "String") unless params[:mobile].is_a? String
-      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :mobile) if params[:mobile].empty?
+      if params.has_key? :payer_address
+        ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :payer_address, data: "String") unless params[:payer_address].is_a? String
+        ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :payer_address) if params[:payer_address].empty?
+      end
 
-      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :email) if params[:email].nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :email, data: "String") unless params[:email].is_a? String
-      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :email) if params[:email].empty?
+      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :payer_mobile) if params[:payer_mobile].nil?
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :payer_mobile, data: "String") unless params[:payer_mobile].is_a? String
+      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :payer_mobile) if params[:payer_mobile].empty?
 
-      expire_date = get_cvs_expire_date
+      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :payer_email) if params[:payer_email].nil?
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :payer_email, data: "String") unless params[:payer_email].is_a? String
+      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :payer_email) if params[:payer_email].empty?
+
+      expire_date = params.has_key?(:expire_date) ? params[:expire_date] : cvs_default_expire_date
 
       # build xml data
       builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do
@@ -60,14 +69,14 @@ module Clt
             cust_password Clt.cvs_cust_password
           }
           order {
-            cust_order_number params[:order_number]
-            order_amount params[:amount]
+            cust_order_number params[:cust_order_number]
+            order_amount params[:order_amount]
             expire_date expire_date
-            payer_name params[:name] if params.has_key? :name
-            payer_postcode params[:postcode] if params.has_key? :postcode
-            payer_address params[:address] if params.has_key? :address
-            payer_mobile params[:mobile]
-            payer_email params[:email]
+            payer_name params[:payer_name] if params.has_key? :payer_name
+            payer_postcode params[:payer_postcode] if params.has_key? :payer_postcode
+            payer_address params[:payer_address] if params.has_key? :payer_address
+            payer_mobile params[:payer_mobile]
+            payer_email params[:payer_email]
           }
         }
       end
@@ -76,21 +85,21 @@ module Clt
     end
 
     def order_query params = {}
-      ErrorMessage.raise_argument_error(msg: :wrong_parameter_type, type: "Hash") unless params.is_a? Hash
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: "Parameter", data: "Hash") unless params.is_a? Hash
 
       ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :service_url) if params[:service_url].nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :service_url, data: "String") unless params[:service_url].is_a? String
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :service_url, data: "String") unless params[:service_url].is_a? String
       ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :service_url) if params[:service_url].empty?
 
-      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :update_time_begin) if params[:update_time_begin].nil?
-      ErrorMessage.raise_argument_error(msg: :wrong_data, field: :update_time_begin, data: "String") unless params[:update_time_begin].is_a? String
-      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :update_time_begin) if params[:update_time_begin].empty?
+      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :process_code_update_time_begin) if params[:process_code_update_time_begin].nil?
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :process_code_update_time_begin, data: "String") unless params[:process_code_update_time_begin].is_a? String
+      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :process_code_update_time_begin) if params[:process_code_update_time_begin].empty?
+      ErrorMessage.raise_argument_error(msg: :wrong_data_format, field: :process_code_update_time_begin) unless /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}\z/.match(params[:process_code_update_time_begin])
 
-      if params.has_key? :update_time_end
-        ErrorMessage.raise_argument_error(msg: :wrong_data, field: :update_time_end, data: "String") unless params[:update_time_end].is_a? String
-        ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :update_time_end) if params[:update_time_end].empty?
-        ErrorMessage.raise_argument_error(msg: :wrong_format, field: :update_time_end) unless /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/.match(params[:update_time_end])
-      end
+      ErrorMessage.raise_argument_error(msg: :missing_parameter, field: :process_code_update_time_end) if params[:process_code_update_time_end].nil?
+      ErrorMessage.raise_argument_error(msg: :parameter_should_be, field: :process_code_update_time_end, data: "String") unless params[:process_code_update_time_end].is_a? String
+      ErrorMessage.raise_argument_error(msg: :cannot_be_empty, field: :process_code_update_time_end) if params[:process_code_update_time_end].empty?
+      ErrorMessage.raise_argument_error(msg: :wrong_data_format, field: :process_code_update_time_end) unless /\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}\z/.match(params[:process_code_update_time_end])
 
       builder = Nokogiri::XML::Builder.new(:encoding => "UTF-8") do
         request {
@@ -100,8 +109,8 @@ module Clt
             cust_password Clt.cvs_cust_password
           }
           query {
-            process_code_update_time_begin params[:update_time_begin]
-            process_code_update_time_end params[:update_time_end] if params.has_key? :update_time_end
+            process_code_update_time_begin params[:process_code_update_time_begin]
+            process_code_update_time_end params[:process_code_update_time_end]
           }
         }
       end
@@ -111,8 +120,9 @@ module Clt
 
     private
 
-      def get_cvs_expire_date
-        offset = 60 * 60 * 24 * Clt.cvs_expire_after
+      def get_cvs_default_expire_date
+        seconds_in_a_day = 60 * 60 * 24
+        offset = seconds_in_a_day * Clt.cvs_default_expire_day
 
         (Time.now + offset).iso8601
       end

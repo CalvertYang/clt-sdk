@@ -6,13 +6,11 @@ module Clt
       case params[:msg]
       when :missing_parameter
         message = "Missing required parameter: #{params[:field]}"
-      when :wrong_parameter_type
-        message = "Parameter should be #{params[:type]}"
-      when :wrong_data
+      when :parameter_should_be
         message = "#{params[:field]} should be #{params[:data]}"
       when :data_length_too_short
         message = "The length of #{params[:field]} is too short"
-      when :wrong_format
+      when :wrong_data_format
         message = "The format for #{params[:field]} is wrong"
       when :cannot_be_empty
         message = "#{params[:field]} cannot be empty"
