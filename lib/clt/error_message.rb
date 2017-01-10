@@ -1,6 +1,6 @@
 module Clt
   class ErrorMessage
-    def self.raise_argument_error params
+    def self.raise_error(params)
       message = nil
 
       case params[:msg]
@@ -11,7 +11,7 @@ module Clt
       when :data_length_too_short
         message = "The length of #{params[:field]} is too short"
       when :wrong_data_format
-        message = "The format for #{params[:field]} is wrong"
+        message = "The format of #{params[:field]} is wrong"
       when :cannot_be_empty
         message = "#{params[:field]} cannot be empty"
       end
